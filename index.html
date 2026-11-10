@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Культура развивает — тренируй мозг, открывай культуру</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- SPLASH -->
+  <section class="screen active screen-neutral" id="screen-splash" aria-label="Загрузка">
+    <div class="deco-circle deco--h1"></div><div class="deco-circle deco-fill deco--h4"></div><div class="deco-circle deco--h5"></div>
+    <div class="splash">
+      <div class="splash-mascot" id="splash-mascot"></div>
+      <div class="brand splash-brand">Культура развивает</div>
+      <div class="spinner" role="status" aria-label="Загрузка"></div>
+    </div>
+  </section>
+
+  <!-- ЗНАКОМСТВО (интро с постепенным появлением) -->
+  <section class="screen screen-neutral" id="screen-welcome">
+    <div class="deco-circle deco--w1"></div><div class="deco-circle deco-fill deco--w2"></div>
+    <div class="topbar"><div class="brand">Культура развивает</div></div>
+    <div class="welcome">
+      <div class="welcome-hero">
+        <h1 class="home-title">Тренируй мозг<br>Открывай культуру</h1>
+        <div class="heading-mascot" id="welcome-mascot"></div>
+      </div>
+      <p class="reveal lede-big">Логические задачи на основе языков и традиций народов России.</p>
+      <div class="reveal fact-grid" id="welcome-facts"></div>
+      <div class="reveal gate" id="welcome-gate">
+        <h2 class="gate-title">А ты готов тренироваться?</h2>
+        <button class="btn-primary" id="welcome-yes" type="button">ДА!</button>
+      </div>
+      <div class="after-gate hidden" id="welcome-after">
+        <p class="reveal lede-big">Память, внимание, логика, творчество — 9 навыков и сотни заданий. Сначала попробуем пару заданий.</p>
+        <div class="reveal"><button class="btn-primary" id="welcome-try" type="button">Попробовать →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЗАДАНИЕ (демо и тренировка) -->
+  <section class="screen screen-neutral" id="screen-task">
+    <div class="topbar">
+      <button class="back-link back-btn" id="task-back" type="button" onclick="closeTask()"></button>
+      <div class="task-timer" id="task-timer" aria-label="Время"></div>
+    </div>
+    <div class="task-wrap">
+      <div class="progress" id="task-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><div class="progress-fill" id="task-progress-fill"></div></div>
+      <div class="kicker" id="task-kicker"></div>
+      <h1 class="task-title" id="task-title"></h1>
+      <p class="task-q" id="task-q"></p>
+      <div class="task-stage" id="task-stage"></div>
+      <div class="task-feedback" id="task-feedback" role="status" aria-live="polite"></div>
+      <div class="task-actions">
+        <button class="btn-ghost" id="task-skip" type="button" onclick="onTaskSkip()">Пропустить</button>
+        <button class="btn-ghost" id="task-hint" type="button" onclick="onTaskHint()" hidden>Подсказка</button>
+        <button class="btn-primary" id="task-check" type="button" onclick="onTaskCheck()">Проверить</button>
+        <button class="btn-primary hidden" id="task-next" type="button" onclick="onTaskNext()">Далее</button>
+        <button class="btn-ghost hidden" id="task-close" type="button" onclick="closeTask()">Закончить</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- РЕЗУЛЬТАТ ДЕМО -->
+  <section class="screen screen-neutral" id="screen-demo-result">
+    <div class="deco-circle deco--w1"></div><div class="deco-circle deco-fill deco--w3"></div>
+    <div class="topbar"><div class="brand">Культура развивает</div></div>
+    <div class="center-card">
+      <div class="kicker">Твой результат</div>
+      <div class="big-num" id="demo-num">0</div>
+      <p class="lede-big" id="demo-text"></p>
+      <button class="btn-primary" id="demo-go" type="button">Перейти в личный кабинет</button>
+    </div>
+  </section>
+
+  <!-- ПРОФИЛЬ: ник и иконка -->
+  <section class="screen screen-neutral" id="screen-profile">
+    <div class="deco-circle deco--w1"></div><div class="deco-circle deco-fill deco--w2"></div>
+    <div class="topbar">
+      <button class="back-link back-btn hidden" id="profile-back" type="button" onclick="openCabinet()">← Назад</button>
+      <div class="brand" id="profile-brand">Культура развивает</div>
+    </div>
+    <form class="center-card form-card" id="profile-form" novalidate>
+      <h1 class="task-title" id="profile-title">Как тебя зовут?</h1>
+      <p class="task-q" id="profile-sub">Придумай ник и выбери иконку. Регистрация не нужна — данные хранятся только в твоём браузере.</p>
+      <label class="field-label" for="profile-nick">Ник</label>
+      <input class="task-input" id="profile-nick" type="text" maxlength="16" autocomplete="off" placeholder="Например, Алмаз">
+      <div class="field-error" id="profile-error" role="alert"></div>
+      <div class="field-label" id="avatar-label">Иконка</div>
+      <div class="avatar-grid" id="avatar-grid" role="radiogroup" aria-labelledby="avatar-label"></div>
+      <div class="task-actions">
+        <button class="btn-ghost hidden" id="profile-reset" type="button">Сбросить все данные</button>
+        <button class="btn-primary" id="profile-save" type="submit" disabled>Продолжить</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ЦЕЛЬ -->
+  <section class="screen screen-neutral" id="screen-goal">
+    <div class="deco-circle deco--w1"></div><div class="deco-circle deco-fill deco--w3"></div>
+    <div class="topbar"><div class="brand">Культура развивает</div></div>
+    <div class="center-card wide">
+      <h1 class="task-title">С чего хочешь начать?</h1>
+      <p class="task-q">Выбери цель — мы подскажем подходящие тренировки.</p>
+      <div class="goal-grid" id="goal-grid" role="radiogroup" aria-label="Цель"></div>
+      <div class="task-actions"><button class="btn-primary" id="goal-next" type="button" disabled>Продолжить</button></div>
+    </div>
+  </section>
+
+  <!-- ЛИЧНЫЙ КАБИНЕТ -->
+  <section class="screen screen-neutral main-screen" id="screen-cabinet">
+    <div class="user-head" id="cabinet-head"></div>
+    <div class="dash" id="cabinet-dash"></div>
+    <div id="cabinet-reco"></div>
+    <h2 class="section-title">Категории</h2>
+    <div class="cat-grid" id="cabinet-cats"></div>
+  </section>
+
+  <!-- ТРЕНИРОВКИ (основной экран) -->
+  <section class="screen screen-neutral main-screen" id="screen-train">
+    <div class="user-head" id="train-head"></div>
+    <h1 class="task-title">Выбери тренировку</h1>
+    <div class="cat-pills" id="train-pills" role="group" aria-label="Категории"></div>
+    <div id="train-reco"></div>
+    <div class="fact-card" id="train-fact"></div>
+    <button class="culture-banner" type="button" onclick="go('screen-select')">
+      <span><b>Культуры России</b><br><small>Татарстан, Карелия, Калмыкия, Якутия — слова, орнаменты, рецепты</small></span><span aria-hidden="true">→</span>
+    </button>
+  </section>
+
+  <!-- СТАТИСТИКА -->
+  <section class="screen screen-neutral main-screen" id="screen-stats">
+    <div class="user-head" id="stats-head"></div>
+    <h1 class="task-title">Статистика</h1>
+    <div class="dash" id="stats-dash"></div>
+    <h2 class="section-title">По категориям</h2>
+    <div class="stat-list" id="stats-cats"></div>
+    <h2 class="section-title">Последние задания</h2>
+    <ul class="log-list" id="stats-log"></ul>
+  </section>
+
+  <!-- ПРОФИЛЬ (просмотр) -->
+  <section class="screen screen-neutral main-screen" id="screen-me">
+    <div class="user-head" id="me-head"></div>
+    <div class="center-card">
+      <div class="avatar-big" id="me-avatar"></div>
+      <h1 class="task-title" id="me-nick"></h1>
+      <p class="task-q" id="me-goal"></p>
+      <div class="task-actions">
+        <button class="btn-ghost" type="button" onclick="openProfileEdit()">Изменить ник и иконку</button>
+        <button class="btn-ghost" type="button" onclick="openGoal(true)">Изменить цель</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: SELECT CULTURE -->
+  <section class="screen screen-neutral" id="screen-select">
+    <div class="topbar">
+      <a class="back-link" onclick="openTraining()">←Назад</a>
+      <div class="select-badge">Выбери культуру</div>
+    </div>
+    <div class="select-hero">
+      <h1 class="select-title">С какой культуры<br>начнём?</h1>
+      <div class="select-mascots" id="select-mascots"></div>
+    </div>
+    <p class="select-subtitle">Выбери регион и отправляйся в тренировку.</p>
+    <div class="culture-grid" id="culture-grid"></div>
+    <button class="select-all" onclick="go('screen-select')">Все культуры</button>
+  </section>
+
+  <!-- SCREEN 4: CULTURE INTRO -->
+  <section class="screen" id="screen-intro">
+    <div class="topbar">
+      <a class="back-link" onclick="go('screen-select')">← Культуры</a>
+      <div class="badge-circle">01/05</div>
+    </div>
+    <h1 id="intro-title"></h1>
+    <p class="lede" id="intro-lede"></p>
+    <div class="intro-row">
+      <div class="intro-mascot" id="intro-mascot"></div>
+      <div class="intro-right">
+        <div class="intro-card">
+          <div class="native-name" id="intro-native"></div>
+          <div class="idx-num" id="intro-idx">01</div>
+        </div>
+        <div class="intro-actions">
+          <button class="btn" onclick="startExercise()">Начать</button>
+        </div>
+        <div class="intro-foot timer-row" id="intro-timer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 5: EXERCISE FLOW -->
+  <section class="screen" id="screen-exercise">
+    <div class="topbar">
+      <div class="brand small back-link" id="ex-back" onclick="go('screen-intro')"></div>
+      <div class="meta-col">
+        <div class="badge-circle" id="ex-progress">01/05</div>
+        <div class="timer-row" id="ex-timer"></div>
+      </div>
+    </div>
+
+    <!-- 02/05: инструкция -->
+    <div id="step-explain">
+      <h2 id="explain-title"></h2>
+      <p class="lede">Мы познакомим тебя с нужными словами прямо во время тренировки.</p>
+      <div class="explain-layout">
+        <div class="explain-card">
+          <ul class="explain-list">
+            <li><span class="n">01</span> Познакомься со словами.</li>
+            <li><span class="n">02</span> Запомни их.</li>
+            <li><span class="n">03</span> Реши задание.</li>
+            <li><span class="n">04</span> Посмотри объяснение и ответ.</li>
+          </ul>
+        </div>
+        <div class="explain-mascot-wrap">
+          <div class="side-mascot" id="explain-mascot"></div>
+        </div>
+      </div>
+      <div class="explain-actions">
+        <button class="btn btn--rect" onclick="nextExercise()">Всё понятно →</button>
+      </div>
+    </div>
+
+    <!-- 03/05: запомни слова -->
+    <div id="step-memorize" class="hidden">
+      <h2>Запомни слова</h2>
+      <p class="lede lede--accent">а также их перевод</p>
+      <div class="word-grid" id="word-grid"></div>
+      <div class="row-between row-between--start">
+        <button class="btn btn--rect" id="words-next">Запомнил</button>
+      </div>
+    </div>
+
+    <!-- 04/05: квиз -->
+    <div id="step-quiz" class="hidden">
+      <h2>Давай проверим</h2>
+      <div class="quiz-layout">
+        <div class="quiz-card">
+          <div class="quiz-q" id="quiz-question"></div>
+          <div class="quiz-options" id="quiz-options"></div>
+        </div>
+        <div class="feedback" id="quiz-feedback"></div>
+        <div class="quiz-bottom">
+          <div class="quiz-mascot-wrap">
+            <div class="mini-mascot" id="quiz-mascot"></div>
+          </div>
+          <div class="quiz-hint-row">
+            <span class="hint-link" id="quiz-hint-link">Подсказка</span>
+            <span class="timer-row" id="quiz-timer"></span>
+          </div>
+        </div>
+        <div class="row-between row-between--end row-quiz">
+          <button class="btn btn--rect hidden" id="quiz-next">Далее →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- игра с орнаментом -->
+    <div id="step-ornament" class="hidden">
+      <h2>Игра</h2>
+      <p class="lede lede--accent">Восстанови последовательность</p>
+      <div class="box">
+        <p class="box-text" id="orn-desc"></p>
+      </div>
+      <div class="orn-panel">
+        <div class="orn-strip" id="orn-strip"></div>
+        <div class="orn-progress" id="orn-progress"></div>
+      </div>
+      <div class="orn-tilebank" id="orn-tilebank"></div>
+      <div class="row-between">
+        <span class="hint-pill" id="orn-hint-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.44 1 1.16 1 1.94V16h5v-.16c0-.78.4-1.5 1-1.94A6 6 0 0 0 12 3Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Подсказка
+        </span>
+        <button class="btn btn--rect hidden" id="orn-next">Готово →</button>
+      </div>
+    </div>
+
+    <!-- рецепт по памяти: маскот справа от подзаголовка -->
+    <div id="step-recipe-view" class="hidden">
+      <div class="recipe-food-row">
+        <img class="food-badge" id="recipe-view-food" src="" alt="">
+        <h2 class="recipe-title" id="recipe-view-title"></h2>
+      </div>
+      <div class="recipe-sub-row">
+        <p class="recipe-sub">Рецепт по памяти</p>
+        <div class="recipe-mascot" id="recipe-view-mascot"></div>
+      </div>
+      <div class="box">
+        <p class="recipe-intro" id="recipe-view-intro"></p>
+        <div class="recipe-steps" id="recipe-view-list"></div>
+      </div>
+      <div class="row-between row-between--start row-tight">
+        <button class="btn btn--rect" id="recipe-view-next">Запомнил</button>
+      </div>
+    </div>
+
+    <!-- восстановить порядок: маскот справа от подзаголовка (как в рецепте по памяти) -->
+    <div id="step-recipe-game" class="hidden">
+      <div class="recipe-food-row">
+        <img class="food-badge" id="recipe-game-food" src="" alt="">
+        <h2 class="recipe-title" id="recipe-title"></h2>
+      </div>
+      <div class="recipe-sub-row">
+        <p class="recipe-sub">Восстанови порядок</p>
+        <div class="recipe-mascot" id="recipe-game-mascot"></div>
+      </div>
+      <div class="box">
+        <p class="recipe-intro" id="recipe-intro"></p>
+        <div class="recipe-steps" id="recipe-steps"></div>
+      </div>
+      <div class="row-between row-between--end row-tight">
+        <button class="btn btn--rect hidden" id="recipe-next">Готово →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 6: RESULTS -->
+  <section class="screen" id="screen-results">
+    <div class="topbar">
+      <a class="back-link" onclick="openTraining()">← К тренировкам</a>
+      <div class="badge-circle">05/05</div>
+    </div>
+    <div class="result-hero">
+      <div class="result-mascot" id="res-mascot"></div>
+      <h1 class="result-greeting" id="res-greeting">—</h1>
+      <span class="pct-badge" id="res-pct">84%</span>
+    </div>
+    <p class="result-sub">Отличная работа</p>
+    <div class="bars-box">
+      <div class="bar-row"><div class="bname">Память</div><div class="bar-track"><div class="bar-fill" id="bar-memory"></div></div><div class="bar-val" id="val-memory">0%</div></div>
+      <div class="bar-row"><div class="bname">Внимание</div><div class="bar-track"><div class="bar-fill" id="bar-attention"></div></div><div class="bar-val" id="val-attention">0%</div></div>
+      <div class="bar-row"><div class="bname">Логика</div><div class="bar-track"><div class="bar-fill" id="bar-logic"></div></div><div class="bar-val" id="val-logic">0%</div></div>
+    </div>
+    <p class="learned-line" id="res-learned-line"></p>
+    <div class="result-footer">
+      <button class="btn btn--rect" onclick="goNextCulture()">Следующая культура</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 7: ИСТОРИЯ ПРОХОЖДЕНИЯ (localStorage, без регистрации) -->
+  <section class="screen screen-neutral" id="screen-history">
+    <div class="topbar">
+      <div class="brand">Культура развивает</div>
+      <div class="topnav">
+        <a class="underline" onclick="openTraining()">К тренировкам</a>
+      </div>
+    </div>
+    <h2>Твоя история</h2>
+    <p class="lede">Сохраняется прямо в этом браузере — на этом устройстве. Без регистрации.</p>
+    <div id="history-list"></div>
+    <div class="row-between">
+      <button class="cta" onclick="clearHistoryUI()">Очистить историю</button>
+    </div>
+  </section>
+
+</div>
+
+<nav class="mainnav" id="mainnav" aria-label="Основное меню" hidden>
+  <button type="button" data-nav="screen-cabinet">Главная</button>
+  <button type="button" data-nav="screen-train">Тренировки</button>
+  <button type="button" data-nav="screen-stats">Статистика</button>
+  <button type="button" data-nav="screen-me">Профиль</button>
+</nav>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/content/categories.js"></script>
+<script src="js/content/tasks.js"></script>
+<script src="js/mascots.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/scoring.js"></script>
+<script src="js/core.js"></script>
+<script src="js/exercises/words.js"></script>
+<script src="js/exercises/quiz.js"></script>
+<script src="js/exercises/ornament.js"></script>
+<script src="js/exercises/recipe.js"></script>
+<script src="js/app.js"></script>
+<script src="js/trainer.js"></script>
+<script src="js/tasks/basic.js"></script>
+<script src="js/tasks/games.js"></script>
+<script src="js/screens.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
